@@ -1,6 +1,7 @@
 const express = require('express')
 const breads = express.Router()
 const Bread = require('../models/bread.js')
+const Baker = require('../models/baker.js')
 // models are what data is supposed to look like or has to look like.
 
 // INDEX
@@ -18,8 +19,14 @@ breads.get('/', (req, res) => {
 
 // NEW
 breads.get('/new', (req, res) => {
-  res.render('new')
-})
+  Baker.find()
+    .then(foundBakers => {
+      res.render('new',{
+        bakers: foundBakers
+      })
+    })
+  })
+
 
 // EDIT
 breads.get('/:id/edit', (req, res) => {
