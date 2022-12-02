@@ -1,5 +1,4 @@
 const React = require('react')
-const baker = require('../controllers/bakers_controller')
 const Default = require('./layouts/Default')
 
 function New ({bakers}) {

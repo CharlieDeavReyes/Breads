@@ -17,6 +17,14 @@ const bakerSchema = new Schema({
     bio: String
 }, { toJSON: {virtuals: true}})
 
+//Virtuals:
+bakerSchema.virtual('breads',{
+    ref:'Bread',
+    localField:'_id',
+    foreignField:'baker'
+})
+
+
 // hooks 
 bakerSchema.post('findOneAndDelete', function() {
     Bread.deleteMany({ baker: this._conditions._id })
@@ -25,15 +33,6 @@ bakerSchema.post('findOneAndDelete', function() {
         })
   })
             
-
-
-//Virtuals:
-bakerSchema.virtual('breads',{
-    ref:'Bread',
-    localField:'id',
-    foreignField:'baker'
-})
-
 
 
 // model and export
