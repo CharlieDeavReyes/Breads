@@ -4,16 +4,16 @@ const Bread = require('../models/bread.js')
 const Baker = require('../models/baker.js')
 // models are what data is supposed to look like or has to look like.
 
-// INDEX
-breads.get('/', (req, res) => {
-  Bread.find()
-      .then(foundBreads => {
-          res.render('index', {
-              breads: foundBreads,
-              title: 'Index Page'
-          })
-      })
+breads.get('/', async (req, res) => {
+  const foundBakers = await Baker.find().lean()
+  const foundBreads = await Bread.find().limit(2).lean() 
+  res.render('index', {
+    breads: foundBreads,
+    bakers: foundBakers,
+    title: 'Index Page'
+  })
 })
+
 
 
 
@@ -21,36 +21,41 @@ breads.get('/', (req, res) => {
 breads.get('/new', (req, res) => {
   Baker.find()
     .then(foundBakers => {
-      res.render('new',{
+      res.render('new', {
         bakers: foundBakers
-      })
-    })
-  })
-
-
-// EDIT
-breads.get('/:id/edit', (req, res) => {
-  Bread.findById(req.params.id) 
-    .then(foundBread => { 
-      res.render('edit', {
-        bread: foundBread 
       })
     })
 })
 
-
-// SHOW
 // SHOW
 breads.get('/:id', (req, res) => {
   Bread.findById(req.params.id)
+      .populate('baker')
       .then(foundBread => {
-        const bakedBy = foundBread.getBakedBy() 
-        console.log(bakedBy)
+        console.log(foundBread)
         res.render('show', {
             bread: foundBread
         })
       })
+      .catch(err => {
+        res.send('404')
+      })
+})
+// EDIT
+breads.get('/:id/edit', (req, res) => {
+  Baker.find()
+    .then(foundBakers => {
+        Bread.findById(req.params.id)
+          .then(foundBread => {
+            res.render('edit', {
+                bread: foundBread, 
+                bakers: foundBakers 
+            })
+          })
     })
+})
+
+
 
 
 //SEED 
